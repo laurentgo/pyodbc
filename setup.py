@@ -150,9 +150,7 @@ def get_compiler_settings(version_str):
         settings['libraries'].append('odbc32')
 
     elif sys.platform == 'darwin':
-        # The latest versions of OS X no longer ship with iodbc.  Assume
-        # unixODBC for now.
-        settings['libraries'].append('odbc')
+        settings['libraries'].append('iodbc')
 
         # Python functions take a lot of 'char *' that really should be const.  gcc complains
         # about this *a lot*
@@ -166,7 +164,7 @@ def get_compiler_settings(version_str):
         settings['define_macros'].append(('MAC_OS_X_VERSION_10_7',))
 
         # Add directories for MacPorts and Homebrew.
-        dirs = ['/usr/local/include', '/opt/local/include', '~/homebrew/include']
+        dirs = ['/usr/local/iODBC/include', '/usr/local/include', '/opt/local/include', '~/homebrew/include']
         settings['include_dirs'].extend(dir for dir in dirs if isdir(dir))
 
         # macOS High Sierra removed these directories.  It is not clear if that is going to be
@@ -176,7 +174,7 @@ def get_compiler_settings(version_str):
         #
         # https://github.com/Homebrew/homebrew-core/issues/14418
 
-        settings['library_dirs'] += ['/usr/lib', '/usr/local/lib']
+        settings['library_dirs'] += ['/usr/lib', '/usr/local/lib', '/usr/local/iODBC/lib']
 
     else:
         # Other posix-like: Linux, Solaris, etc.
